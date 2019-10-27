@@ -3,8 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "canvas": "^2.6.0",
+    "fabric": "^3.4.0",
+    "konva": "^4.0.15",
     "react": "^16.10.2",
+    "react-ace": "^7.0.4",
     "react-dom": "^16.10.2",
+    "react-konva": "^16.10.1-0",
     "react-scripts": "3.2.0"
   },
   "scripts": {
