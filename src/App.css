@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  background: lightblue;
+  background: whitesmoke;
 }
 
 .App-logo {
@@ -22,6 +22,9 @@
   display: inline-block
 }
 
+.rowC{
+  display:flex; flex-direction:row
+}
 
 .App-link {
   color: #09d3ac;
