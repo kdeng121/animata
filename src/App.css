@@ -23,7 +23,14 @@
 }
 
 .rowC{
-  display:flex; flex-direction:row
+  display:flex;
+  flex-direction:row;
+}
+.stage{
+  background: lightyellow;
+}
+.editor{
+  padding-right: 2%;
 }
 
 .App-link {
