@@ -1,5 +1,8 @@
 Front end:
-- Animate object from Point a to Point b
+- moveRelative should be controlled by the Canvas
+- Use Inheritance (Shape class instead of two Circles and Rectangles array)
+- moveRelative should accept parameters (distance)
+- addObject also should accept parameters (what kind of object, size, color, position)
 
 Back end:
 - Make API calls like moveRelative()

@@ -1,21 +1,38 @@
 import React, { Component } from 'react';
 import './App.css';
 import AceEditor from 'react-ace';
+import brace from 'brace';
 import Konva from 'konva';
 import { render } from 'react-dom';
 import { Stage, Layer, Rect, Text, Circle, Line } from 'react-konva';
 import MyRect from './Components/MyRect'; // Import a component from another file
 import MyCircle from './Components/MyCircle'; // Import a component from another file
-
-
-
-function onChange(newValue) {
-  console.log('change',newValue);
-}
+import 'brace/theme/github';
 
 
 
 class App extends Component {
+
+  parseCode(){
+    var lines = this.state.codeValue.split('\n');
+    for(var i=0; i<lines.length; i++){
+      var shape = lines[i];
+      if (shape.localeCompare("circle") == 0){
+        this.addCircle();
+      }
+      if (shape.localeCompare("rectangle") == 0){
+        this.addRectangle();
+      }
+    }
+  }
+
+  onChange(newValue) {
+    this.setState({
+      codeValue: newValue
+    });
+    console.log("changed", this.state.codeValue);
+
+  }
 
   addRectangle(){
     const newRectangle = {
@@ -45,8 +62,8 @@ class App extends Component {
     this.state = {
       rects: [
         {
-          x: 10,
-          y: 10,
+          x: 500,
+          y: 100,
           width: 100,
           height: 100,
           fill: 'red',
@@ -68,7 +85,8 @@ class App extends Component {
           radius: 50,
           fill: 'black',
         }
-      ]
+      ],
+      codeValue: "exampleCode"
     }
   }
 
@@ -86,13 +104,17 @@ class App extends Component {
           <div className="editor">
             <AceEditor
               theme="monokai"
-              onChange={onChange}
+              onChange={this.onChange.bind(this)}
               name="UNIQUE_ID_OF_DIV"
               editorProps={{$blockScrolling: true}}
               fontSize={16}
+              value={this.state.codeValue}
+
             />
             <button onClick={this.addRectangle.bind(this)}>Add Rectangle!</button>
             <button onClick={this.addCircle.bind(this)}>Add Circle!</button>
+            <button onClick={this.parseCode.bind(this)}>RUN</button>
+
 
 
           </div>
