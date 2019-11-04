@@ -5,63 +5,22 @@ import brace from 'brace';
 import Konva from 'konva';
 import { render } from 'react-dom';
 import { Stage, Layer, Rect, Text, Circle, Line } from 'react-konva';
-import MyRect from './Components/MyRect'; // Import a component from another file
-import MyCircle from './Components/MyCircle'; // Import a component from another file
+import Shape from './Components/Shape'; // Import a component from another file
+
 import 'brace/theme/github';
 
 
 
-class App extends Component {
+class App extends React.Component {
 
-  parseCode(){
-    var lines = this.state.codeValue.split('\n');
-    for(var i=0; i<lines.length; i++){
-      var shape = lines[i];
-      if (shape.localeCompare("circle") == 0){
-        this.addCircle();
-      }
-      if (shape.localeCompare("rectangle") == 0){
-        this.addRectangle();
-      }
-    }
-  }
-
-  onChange(newValue) {
-    this.setState({
-      codeValue: newValue
-    });
-    console.log("changed", this.state.codeValue);
-
-  }
-
-  addRectangle(){
-    const newRectangle = {
-      x: 10,
-      y: 10,
-      width: 100,
-      height: 100,
-      fill: 'blue',
-      id: 'rect3'
-    };
-    this.setState({ rects: [...this.state.rects, newRectangle] })
-  }
-
-  addCircle(){
-    console.log("CIRCLE ADDED BUT");
-    const newCircle = {
-      x: 200,
-      y: 200,
-      radius: 50,
-      fill: 'black',
-    };
-    this.setState({ circles: [...this.state.circles, newCircle] })
-  }
 
   constructor(props){
     super(props);
+
     this.state = {
-      rects: [
+      allShapes:[
         {
+          type: 'rectangle',
           x: 500,
           y: 100,
           width: 100,
@@ -70,25 +29,128 @@ class App extends Component {
           id: 'rect1'
         },
         {
+          type: 'rectangle',
           x: 150,
           y: 150,
           width: 100,
           height: 100,
           fill: 'green',
           id: 'rect2'
-        }
-      ],
-      circles: [
+        },
         {
+          type: 'circle',
           x: 100,
           y: 100,
           radius: 50,
           fill: 'black',
+          id: 'circle1'
         }
       ],
-      codeValue: "exampleCode"
+      codeValue: ""
+    }
+
+    this.myRefs = [];
+
+    for (var i=0; i<this.state.allShapes.length; i++){
+      this.myRefs[i] = React.createRef();
     }
   }
+  
+
+
+  clearCanvas(){
+    this.setState({
+      circles: [],
+      rects: [],
+    })
+  }
+
+
+  moveRelative(objectId, x_dist, y_dist){
+    //var objectId = 'kevin';
+
+    for (var i=0; i<this.state.allShapes.length; i++){
+      if (objectId == this.state.allShapes[i].id){
+        this.myRefs[i].current.move(x_dist, y_dist);
+        break;
+      }
+    }
+
+  }
+
+  parseCode(){
+    var lines = this.state.codeValue.split('\n');
+    for(var i=0; i<lines.length; i++){
+      var line = lines[i];
+      var parts = line.split(' ');
+      var command = parts[0];
+
+      if (command == "circle"){
+        this.addCircle({
+          x: parts[1],
+          y: parts[2],
+          radius: parts[3],
+          fill: parts[4],
+          id: parts[5]
+        });
+      }
+
+      if (command == "rectangle"){
+        this.addRectangle({
+          x: parts[1],
+          y: parts[2],
+          width: parts[3],
+          height: parts[4],
+          fill: parts[5],
+          id: parts[6]  
+        });
+      }
+
+      if (command == "moveRelative"){
+        const target = parts[1];
+        const x_offset = parseInt(parts[2]);
+        const y_offset = parseInt(parts[3]);
+        this.moveRelative(target, x_offset, y_offset);
+      }
+    }
+  }
+
+  onChange(newValue) {
+    this.setState({
+      codeValue: newValue
+    });
+
+  }
+
+  addRectangle(props){
+    this.myRefs[this.myRefs.length] = React.createRef();
+    const newRectangle = {
+      type: 'rectangle',
+      x: parseInt(props.x),
+      y: parseInt(props.y),
+      width: parseInt(props.width),
+      height: parseInt(props.height),
+      fill: props.fill,
+      id: props.id
+    };
+    this.setState({ allShapes: [...this.state.allShapes, newRectangle] });
+  }
+
+  addCircle(props){
+    this.myRefs[this.myRefs.length] = React.createRef();
+
+    const newCircle = {
+      type: 'circle',
+      x: parseInt(props.x),
+      y: parseInt(props.y),
+      radius: parseInt(props.radius),
+      fill: props.fill,
+      id: props.id
+    };
+    this.setState({ allShapes: [...this.state.allShapes, newCircle] });
+  }
+
+  
 
 
   render() {
@@ -103,7 +165,7 @@ class App extends Component {
         <div className="rowC">
           <div className="editor">
             <AceEditor
-              theme="monokai"
+              theme="github"
               onChange={this.onChange.bind(this)}
               name="UNIQUE_ID_OF_DIV"
               editorProps={{$blockScrolling: true}}
@@ -111,10 +173,9 @@ class App extends Component {
               value={this.state.codeValue}
 
             />
-            <button onClick={this.addRectangle.bind(this)}>Add Rectangle!</button>
-            <button onClick={this.addCircle.bind(this)}>Add Circle!</button>
             <button onClick={this.parseCode.bind(this)}>RUN</button>
-
+            <button onClick={this.clearCanvas.bind(this)}>CLEAR</button>
+            <button onClick={this.moveRelative.bind(this)}>Move rect1</button>
 
 
           </div>
@@ -123,11 +184,24 @@ class App extends Component {
           <div className="stage">
             <Stage width={700} height={600}>
               <Layer>
-                {this.state.rects.map((rect, i) => {
+                {this.state.allShapes.map((shape, i) => {
+                  //console.log(shape);
+                
+                  return (
+                    <Shape
+                      key={i}
+                      shapeProps={shape}
+                      ref={this.myRefs[i]}
+                    />
+                  );
+                })}
+
+                {/* {this.state.rects.map((rect, i) => {
                   return (
                     <MyRect
                       key={i}
                       shapeProps={rect}
+                      ref={this.myRefs[i]}
                     />
                   );
                 })}
@@ -138,7 +212,7 @@ class App extends Component {
                       shapeProps={circ}
                     />
                   );
-                })}
+                })} */}
               </Layer>
             </Stage>
           </div>

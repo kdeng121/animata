@@ -17,12 +17,15 @@ class MyRect extends React.Component {
           ref={node => {
             this.rect = node;
           }}
+          x={this.props.shapeProps.x}
+          y={this.props.shapeProps.y}
+
           width={this.props.shapeProps.width}
-          height={this.props.shapeProps.width}
+          height={this.props.shapeProps.height}
           fill={this.props.shapeProps.fill}
           id={this.props.shapeProps.id}
           draggable
-          onClick={this.moveForward}
+          onClick={this.moveForward.bind(this)}
         />
         );
     }
