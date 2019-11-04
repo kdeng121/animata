@@ -1,9 +1,13 @@
 Front end:
 - moveRelative should be controlled by the Canvas
 - moveRelative should accept parameters (distance)
-
 - Use Inheritance (Shape class instead of two Circles and Rectangles array)
+
 - addObject also should accept parameters (what kind of object, size, color, position)
 
 Back end:
 - Make API calls like moveRelative()
+
+
+ISSUES:
+- Async calls of setState/clearCanvas

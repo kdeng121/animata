@@ -27,7 +27,6 @@ class Shape extends React.Component {
                   fill={this.props.shapeProps.fill}
                   id={this.props.shapeProps.id}
                   draggable
-                  onClick={this.move.bind(this)}
                 />
             );
         }
@@ -44,7 +43,22 @@ class Shape extends React.Component {
                     fill={this.props.shapeProps.fill}
                     id={this.props.shapeProps.id}
                     draggable
-                    onClick={this.moveForward}
+                />
+            );
+        }
+
+        if (this.props.shapeProps.type == "text"){
+            return (
+                <Text
+                    ref={node => {
+                        this.shape = node;
+                    }}
+                    x={this.props.shapeProps.x}
+                    y={this.props.shapeProps.y}
+                    text={this.props.shapeProps.text}
+                    id={this.props.shapeProps.id}
+                    fontSize={20}
+                    draggable
                 />
             );
         }

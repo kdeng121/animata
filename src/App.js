@@ -59,16 +59,14 @@ class App extends React.Component {
 
 
   clearCanvas(){
-    this.setState({
-      circles: [],
-      rects: [],
-    })
+    this.setState({allShapes: [], myRefs: []}, () => console.log("Cleared canvas: ", this.state.allShapes));
+
   }
 
 
   moveRelative(objectId, x_dist, y_dist){
-    //var objectId = 'kevin';
-
+    console.log("OBJECT ID: ", objectId);
+    console.log("MY REFS", this.state.myRefs);
     for (var i=0; i<this.state.allShapes.length; i++){
       if (objectId == this.state.allShapes[i].id){
         this.myRefs[i].current.move(x_dist, y_dist);
@@ -79,79 +77,111 @@ class App extends React.Component {
   }
 
   parseCode(){
-    var lines = this.state.codeValue.split('\n');
-    for(var i=0; i<lines.length; i++){
-      var line = lines[i];
-      var parts = line.split(' ');
-      var command = parts[0];
+    // this.setState({allShapes: [], myRefs: []}, () => {
 
-      if (command == "circle"){
-        this.addCircle({
-          x: parts[1],
-          y: parts[2],
-          radius: parts[3],
-          fill: parts[4],
-          id: parts[5]
-        });
+      var lines = this.state.codeValue.split('\n');
+      for(var i=0; i<lines.length; i++){
+        var line = lines[i];
+        var parts = line.split(' ');
+        var command = parts[0];
+  
+        if (command == "circle"){
+          this.addShape({
+            type: command,
+            x: parts[1],
+            y: parts[2],
+            radius: parts[3],
+            fill: parts[4],
+            id: parts[5]
+          });
+        }
+  
+        if (command == "rectangle"){
+          this.addShape({
+            type: command,
+            x: parts[1],
+            y: parts[2],
+            width: parts[3],
+            height: parts[4],
+            fill: parts[5],
+            id: parts[6]  
+          });
+        }
+
+        if (command == "text"){
+          this.addShape({
+            type: command,
+            x: parts[1],
+            y: parts[2],
+            text: parts[3],
+            id: parts[4]
+          })
+        }
+  
+        if (command == "moveRelative"){
+          const target = parts[1];
+          const x_offset = parseInt(parts[2]);
+          const y_offset = parseInt(parts[3]);
+          this.moveRelative(target, x_offset, y_offset);
+        }
       }
 
-      if (command == "rectangle"){
-        this.addRectangle({
-          x: parts[1],
-          y: parts[2],
-          width: parts[3],
-          height: parts[4],
-          fill: parts[5],
-          id: parts[6]  
-        });
-      }
-
-      if (command == "moveRelative"){
-        const target = parts[1];
-        const x_offset = parseInt(parts[2]);
-        const y_offset = parseInt(parts[3]);
-        this.moveRelative(target, x_offset, y_offset);
-      }
-    }
+    // });
   }
 
   onChange(newValue) {
     this.setState({
       codeValue: newValue
     });
-
   }
 
-  addRectangle(props){
-    this.myRefs[this.myRefs.length] = React.createRef();
-    const newRectangle = {
-      type: 'rectangle',
+
+  addShape(props){
+    this.myRefs.push(React.createRef());
+
+    const newShape = {
+      type: props.type,
       x: parseInt(props.x),
       y: parseInt(props.y),
       width: parseInt(props.width),
       height: parseInt(props.height),
-      fill: props.fill,
-      id: props.id
-    };
-    this.setState({ allShapes: [...this.state.allShapes, newRectangle] });
-  }
-
-  addCircle(props){
-    this.myRefs[this.myRefs.length] = React.createRef();
-
-    const newCircle = {
-      type: 'circle',
-      x: parseInt(props.x),
-      y: parseInt(props.y),
       radius: parseInt(props.radius),
+      text: props.text,
       fill: props.fill,
       id: props.id
     };
-    this.setState({ allShapes: [...this.state.allShapes, newCircle] });
+    this.setState({ allShapes: [...this.state.allShapes, newShape] }, () => console.log(this.state.allShapes));
   }
+
+  // addRectangle(props){
+  //   this.myRefs[this.myRefs.length] = React.createRef();
+  //   const newRectangle = {
+  //     type: 'rectangle',
+  //     x: parseInt(props.x),
+  //     y: parseInt(props.y),
+  //     width: parseInt(props.width),
+  //     height: parseInt(props.height),
+  //     fill: props.fill,
+  //     id: props.id
+  //   };
+  //   this.setState({ allShapes: [...this.state.allShapes, newRectangle] });
+  // }
+
+  // addCircle(props){
+  //   this.myRefs[this.myRefs.length] = React.createRef();
+
+  //   const newCircle = {
+  //     type: 'circle',
+  //     x: parseInt(props.x),
+  //     y: parseInt(props.y),
+  //     radius: parseInt(props.radius),
+  //     fill: props.fill,
+  //     id: props.id
+  //   };
+  //   this.setState({ allShapes: [...this.state.allShapes, newCircle] });
+  // }
 
   
-
 
   render() {
     return (
@@ -171,11 +201,9 @@ class App extends React.Component {
               editorProps={{$blockScrolling: true}}
               fontSize={16}
               value={this.state.codeValue}
-
             />
             <button onClick={this.parseCode.bind(this)}>RUN</button>
             <button onClick={this.clearCanvas.bind(this)}>CLEAR</button>
-            <button onClick={this.moveRelative.bind(this)}>Move rect1</button>
 
 
           </div>
@@ -184,9 +212,7 @@ class App extends React.Component {
           <div className="stage">
             <Stage width={700} height={600}>
               <Layer>
-                {this.state.allShapes.map((shape, i) => {
-                  //console.log(shape);
-                
+                {this.state.allShapes.map((shape, i) => {                
                   return (
                     <Shape
                       key={i}
