@@ -1,13 +1,24 @@
-Front end:
+In progress:
+- addObject also should accept parameters (what kind of object, size, color, position)
+
+
+TODO:
+- fix async (sequential ordering) animations (DELAY)
+- animate group of objects
+
+Done:
 - moveRelative should be controlled by the Canvas
 - moveRelative should accept parameters (distance)
 - Use Inheritance (Shape class instead of two Circles and Rectangles array)
 
-- addObject also should accept parameters (what kind of object, size, color, position)
-
-Back end:
-- Make API calls like moveRelative()
-
-
 ISSUES:
 - Async calls of setState/clearCanvas
+
+DEADLINES:
+- Draft of paper by Nov. 18
+- Animations of shapes (rather than code)
+- Goal is to get to data structure visualizations  similar to python tutor (no shapes)
+- Advantage of shapes: color code, highlight as you step through array
+- Python tutor shows CHANGES, where I can HIGHLIGHT 
+- Make it clear to user WHERE THE CHANGE HAPPENS
+- Focus on manipulating the data structure as opposed to showing everything in program

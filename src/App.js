@@ -6,10 +6,8 @@ import Konva from 'konva';
 import { render } from 'react-dom';
 import { Stage, Layer, Rect, Text, Circle, Line } from 'react-konva';
 import Shape from './Components/Shape'; // Import a component from another file
-
 import 'brace/theme/github';
-
-
+import { thisExpression } from '@babel/types';
 
 class App extends React.Component {
 
@@ -58,13 +56,19 @@ class App extends React.Component {
   
 
 
-  clearCanvas(){
-    this.setState({allShapes: [], myRefs: []}, () => console.log("Cleared canvas: ", this.state.allShapes));
+  async clearCanvas(){
+    this.setState({allShapes: [], myRefs: []});
 
   }
 
+  async runCanvas(){
+    await this.clearCanvas();
+    this.parseCode();
+    //this.setState({allShapes: [], myRefs: []}, () => this.parseCode());
+  }
 
-  moveRelative(objectId, x_dist, y_dist){
+
+  async moveRelative(objectId, x_dist, y_dist){
     console.log("OBJECT ID: ", objectId);
     console.log("MY REFS", this.state.myRefs);
     for (var i=0; i<this.state.allShapes.length; i++){
@@ -76,17 +80,18 @@ class App extends React.Component {
 
   }
 
-  parseCode(){
+  async parseCode(){
     // this.setState({allShapes: [], myRefs: []}, () => {
 
       var lines = this.state.codeValue.split('\n');
+      console.log(lines.length)
       for(var i=0; i<lines.length; i++){
         var line = lines[i];
         var parts = line.split(' ');
         var command = parts[0];
   
         if (command == "circle"){
-          this.addShape({
+          await this.addShape({
             type: command,
             x: parts[1],
             y: parts[2],
@@ -94,10 +99,11 @@ class App extends React.Component {
             fill: parts[4],
             id: parts[5]
           });
+          console.log(this.state.allShapes);  
         }
   
         if (command == "rectangle"){
-          this.addShape({
+          await this.addShape({
             type: command,
             x: parts[1],
             y: parts[2],
@@ -109,7 +115,7 @@ class App extends React.Component {
         }
 
         if (command == "text"){
-          this.addShape({
+          await this.addShape({
             type: command,
             x: parts[1],
             y: parts[2],
@@ -122,11 +128,23 @@ class App extends React.Component {
           const target = parts[1];
           const x_offset = parseInt(parts[2]);
           const y_offset = parseInt(parts[3]);
-          this.moveRelative(target, x_offset, y_offset);
+          await this.moveRelative(target, x_offset, y_offset);
         }
+        //DELAY HERE
       }
 
     // });
+  }
+  
+  sleep(milliseconds) {
+    console.log("sleep started");
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+      if ((new Date().getTime() - start) > milliseconds){
+        break;
+      }
+    }
+    console.log("sleep ended");
   }
 
   onChange(newValue) {
@@ -136,7 +154,7 @@ class App extends React.Component {
   }
 
 
-  addShape(props){
+  async addShape(props){
     this.myRefs.push(React.createRef());
 
     const newShape = {
@@ -150,38 +168,8 @@ class App extends React.Component {
       fill: props.fill,
       id: props.id
     };
-    this.setState({ allShapes: [...this.state.allShapes, newShape] }, () => console.log(this.state.allShapes));
+    this.setState({ allShapes: [...this.state.allShapes, newShape] }, () => console.log("ADDED SHAPE"));
   }
-
-  // addRectangle(props){
-  //   this.myRefs[this.myRefs.length] = React.createRef();
-  //   const newRectangle = {
-  //     type: 'rectangle',
-  //     x: parseInt(props.x),
-  //     y: parseInt(props.y),
-  //     width: parseInt(props.width),
-  //     height: parseInt(props.height),
-  //     fill: props.fill,
-  //     id: props.id
-  //   };
-  //   this.setState({ allShapes: [...this.state.allShapes, newRectangle] });
-  // }
-
-  // addCircle(props){
-  //   this.myRefs[this.myRefs.length] = React.createRef();
-
-  //   const newCircle = {
-  //     type: 'circle',
-  //     x: parseInt(props.x),
-  //     y: parseInt(props.y),
-  //     radius: parseInt(props.radius),
-  //     fill: props.fill,
-  //     id: props.id
-  //   };
-  //   this.setState({ allShapes: [...this.state.allShapes, newCircle] });
-  // }
-
-  
 
   render() {
     return (
@@ -202,7 +190,7 @@ class App extends React.Component {
               fontSize={16}
               value={this.state.codeValue}
             />
-            <button onClick={this.parseCode.bind(this)}>RUN</button>
+            <button onClick={this.runCanvas.bind(this)}>RUN</button>
             <button onClick={this.clearCanvas.bind(this)}>CLEAR</button>
 
 
@@ -221,36 +209,14 @@ class App extends React.Component {
                     />
                   );
                 })}
-
-                {/* {this.state.rects.map((rect, i) => {
-                  return (
-                    <MyRect
-                      key={i}
-                      shapeProps={rect}
-                      ref={this.myRefs[i]}
-                    />
-                  );
-                })}
-                {this.state.circles.map((circ, i) => {
-                  return (
-                    <MyCircle
-                      key={i}
-                      shapeProps={circ}
-                    />
-                  );
-                })} */}
               </Layer>
             </Stage>
           </div>
           
         </div>
-
-
-        
       </div>
     );
   }
-
 }
 
 export default App;
