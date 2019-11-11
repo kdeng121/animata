@@ -3,6 +3,13 @@ import { Stage, Layer, Rect, Text, Circle, Line } from 'react-konva';
 
 
 class Shape extends React.Component {
+
+    constructor(props){
+        super(props);
+        this.state = {
+            hidden: "hidden"
+        }
+    }
     move(x_offset, y_offset) {
         // to() is a method of `Konva.Node` instances
         this.shape.to({
@@ -10,7 +17,8 @@ class Shape extends React.Component {
           y: this.shape.getAttr('y') + y_offset,
           duration: .5
         });
-    };
+    }
+
 
     render() {
         if (this.props.shapeProps.type == "rectangle"){

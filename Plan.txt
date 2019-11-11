@@ -4,6 +4,7 @@ In progress:
 
 TODO:
 - fix async (sequential ordering) animations (DELAY)
+- Delay after each function call
 - animate group of objects
 
 Done:

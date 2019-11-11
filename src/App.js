@@ -7,11 +7,10 @@ import { render } from 'react-dom';
 import { Stage, Layer, Rect, Text, Circle, Line } from 'react-konva';
 import Shape from './Components/Shape'; // Import a component from another file
 import 'brace/theme/github';
-import { thisExpression } from '@babel/types';
+import { Delay } from 'react-delay';
+
 
 class App extends React.Component {
-
-
   constructor(props){
     super(props);
 
@@ -52,20 +51,43 @@ class App extends React.Component {
     for (var i=0; i<this.state.allShapes.length; i++){
       this.myRefs[i] = React.createRef();
     }
-  }
-  
 
+    this.lines = [];
+    this.index = 0;
+  }
 
   async clearCanvas(){
     this.setState({allShapes: [], myRefs: []});
-
+    this.index = 0;
   }
 
   async runCanvas(){
     await this.clearCanvas();
-    this.parseCode();
+    //this.parseCode();
     //this.setState({allShapes: [], myRefs: []}, () => this.parseCode());
+    this.lines = this.state.codeValue.split('\n');
+
+    for (const item of this.lines){
+      await this.delayedLog(item);
+    }
+    setTimeout(() => console.log('Done!'), 1000);
+    // while (this.index < this.lines.length){
+    // }
   }
+
+
+  delay() {
+    return new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  
+  async delayedLog(item) {
+    // notice that we can await a function
+    // that returns a promise
+    await this.delay();
+    //console.log(item);
+    this.stepThrough();
+  }
+
 
 
   async moveRelative(objectId, x_dist, y_dist){
@@ -79,14 +101,26 @@ class App extends React.Component {
     }
 
   }
+  
+  stepThrough(){
+    this.lines = this.state.codeValue.split('\n');
 
-  async parseCode(){
+    if (this.index < this.lines.length){
+      this.parseCode(this.index);
+      this.index += 1;
+    }
+
+  }
+
+
+
+  async parseCode(i){
     // this.setState({allShapes: [], myRefs: []}, () => {
 
-      var lines = this.state.codeValue.split('\n');
-      console.log(lines.length)
-      for(var i=0; i<lines.length; i++){
-        var line = lines[i];
+      // var lines = this.state.codeValue.split('\n');
+      // console.log(lines.length)
+      //for(var i=0; i<lines.length; i++){
+        var line = this.lines[i];
         var parts = line.split(' ');
         var command = parts[0];
   
@@ -99,7 +133,6 @@ class App extends React.Component {
             fill: parts[4],
             id: parts[5]
           });
-          console.log(this.state.allShapes);  
         }
   
         if (command == "rectangle"){
@@ -128,15 +161,17 @@ class App extends React.Component {
           const target = parts[1];
           const x_offset = parseInt(parts[2]);
           const y_offset = parseInt(parts[3]);
-          await this.moveRelative(target, x_offset, y_offset);
+          //await this.moveRelative(target, x_offset, y_offset);
+          // setTimeout(async () => {await this.moveRelative(target, x_offset, y_offset)}, 1000);
+          this.moveRelative(target, x_offset, y_offset);
         }
         //DELAY HERE
-      }
+      //}
 
     // });
   }
   
-  sleep(milliseconds) {
+  async sleep(milliseconds) {
     console.log("sleep started");
     var start = new Date().getTime();
     for (var i = 0; i < 1e7; i++) {
@@ -168,7 +203,7 @@ class App extends React.Component {
       fill: props.fill,
       id: props.id
     };
-    this.setState({ allShapes: [...this.state.allShapes, newShape] }, () => console.log("ADDED SHAPE"));
+    this.setState({ allShapes: [...this.state.allShapes, newShape] });
   }
 
   render() {
@@ -192,6 +227,7 @@ class App extends React.Component {
             />
             <button onClick={this.runCanvas.bind(this)}>RUN</button>
             <button onClick={this.clearCanvas.bind(this)}>CLEAR</button>
+            <button onClick={this.stepThrough.bind(this)}>STEP THROUGH</button>
 
 
           </div>
@@ -201,7 +237,7 @@ class App extends React.Component {
             <Stage width={700} height={600}>
               <Layer>
                 {this.state.allShapes.map((shape, i) => {                
-                  return (
+                  return (  
                     <Shape
                       key={i}
                       shapeProps={shape}
