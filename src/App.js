@@ -46,7 +46,8 @@ class App extends React.Component {
         }
       ],
       codeValue: "",
-      delayValue: 1000
+      delayValue: 1000,
+      lineIndex: 0
     }
 
     this.myRefs = [];
@@ -56,7 +57,7 @@ class App extends React.Component {
     }
 
     this.lines = [];
-    this.index = 0;
+    //this.index = 0;
 
   }
 
@@ -65,8 +66,7 @@ class App extends React.Component {
    * Resets line index to 0
    */
   async clearCanvas(){
-    this.setState({allShapes: [], myRefs: []});
-    this.index = 0;
+    this.setState({allShapes: [], myRefs: [], lineIndex: 0});
   }
 
   /**
@@ -136,9 +136,10 @@ class App extends React.Component {
   stepThrough(){
     this.lines = this.state.codeValue.split('\n');
 
-    if (this.index < this.lines.length){
-      this.parseCode(this.index);
-      this.index += 1;
+    if (this.state.lineIndex < this.lines.length){
+      this.parseCode(this.state.lineIndex);
+      this.setState({ lineIndex: this.state.lineIndex + 1 });
+      //this.index += 1;
     }
 
   }
@@ -278,6 +279,7 @@ class App extends React.Component {
         
         <div className="rowC">
           <div className="editor">
+          <p>Executing line #{this.state.lineIndex}: {this.lines[this.state.lineIndex-1]}</p>
             <AceEditor
               theme="github"
               onChange={this.onChange.bind(this)}
