@@ -1,16 +1,30 @@
 In progress:
-- addObject also should accept parameters (what kind of object, size, color, position)
-
+- Highlight line of code (or display current line num)
+- Clean design of buttons
+- Intro of draft
 
 TODO:
-- fix async (sequential ordering) animations (DELAY)
-- Delay after each function call
+- Refactor: JavaDoc comments + refactor all methods
+- Use Map to track reference array of object
+- Error checking of user input
 - animate group of objects
+
 
 Done:
 - moveRelative should be controlled by the Canvas
 - moveRelative should accept parameters (distance)
 - Use Inheritance (Shape class instead of two Circles and Rectangles array)
+- fix async (sequential ordering) animations (DELAY)
+- Delay after each function call
+- Delete object
+- Partial draft outline
+- addObject also should accept parameters (what kind of object, size, color, position)
+- Slider bar for delay
+- changeParams for color and size
+- Appendix of commands
+
+
+
 
 ISSUES:
 - Async calls of setState/clearCanvas
@@ -23,3 +37,11 @@ DEADLINES:
 - Python tutor shows CHANGES, where I can HIGHLIGHT 
 - Make it clear to user WHERE THE CHANGE HAPPENS
 - Focus on manipulating the data structure as opposed to showing everything in program
+
+
+GOD:
+https://lavrton.com/javascript-loops-how-to-handle-async-await-6252dd3c795/
+
+Draft comments:
+- Technical details describe how everything works
+- Walkthrough of example

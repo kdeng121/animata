@@ -6,9 +6,6 @@ class Shape extends React.Component {
 
     constructor(props){
         super(props);
-        this.state = {
-            hidden: "hidden"
-        }
     }
     move(x_offset, y_offset) {
         // to() is a method of `Konva.Node` instances
@@ -17,6 +14,31 @@ class Shape extends React.Component {
           y: this.shape.getAttr('y') + y_offset,
           duration: .5
         });
+    }
+
+    changeParam(param, newValue){
+        if (param == 'color'){
+            //this.shape.fill(newValue);
+            this.shape.to({
+                fill: newValue
+            });
+        }
+
+        if (param == 'height'){
+            this.shape.to({
+                height: newValue
+            });
+        }
+        if (param == 'width'){
+            this.shape.to({
+                width: newValue
+            });
+        }
+        if (param == 'radius'){
+            this.shape.to({
+                radius: newValue
+            });
+        }
     }
 
 

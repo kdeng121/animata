@@ -9,6 +9,8 @@ import Shape from './Components/Shape'; // Import a component from another file
 import 'brace/theme/github';
 import { Delay } from 'react-delay';
 
+import Slider from 'react-rangeslider'
+import 'react-rangeslider/lib/index.css'
 
 class App extends React.Component {
   constructor(props){
@@ -43,7 +45,8 @@ class App extends React.Component {
           id: 'circle1'
         }
       ],
-      codeValue: ""
+      codeValue: "",
+      delayValue: 1000
     }
 
     this.myRefs = [];
@@ -54,32 +57,44 @@ class App extends React.Component {
 
     this.lines = [];
     this.index = 0;
+
   }
 
+  /**
+   * Clears the canvas by removing all shapes and object refs
+   * Resets line index to 0
+   */
   async clearCanvas(){
     this.setState({allShapes: [], myRefs: []});
     this.index = 0;
   }
 
+  /**
+   * Parses commands and executes each command (via stepThrough) with delay time
+   */
   async runCanvas(){
     await this.clearCanvas();
     //this.parseCode();
-    //this.setState({allShapes: [], myRefs: []}, () => this.parseCode());
     this.lines = this.state.codeValue.split('\n');
 
     for (const item of this.lines){
       await this.delayedLog(item);
     }
-    setTimeout(() => console.log('Done!'), 1000);
-    // while (this.index < this.lines.length){
-    // }
+    setTimeout(() => console.log('Done!' ), this.state.delayValue);
   }
 
 
+  /**
+   * Delay 1 second
+   */
   delay() {
-    return new Promise(resolve => setTimeout(resolve, 1000));
+    return new Promise(resolve => setTimeout(resolve, this.state.delayValue));
   }
   
+  /**
+   * 
+   * Delay helper
+   */
   async delayedLog(item) {
     // notice that we can await a function
     // that returns a promise
@@ -90,9 +105,15 @@ class App extends React.Component {
 
 
 
+  /**
+   * 
+   * @param {String} objectId 
+   * @param {int} x_dist 
+   * @param {int} y_dist 
+   * moves objectId x_dist and y_dist
+   */
   async moveRelative(objectId, x_dist, y_dist){
-    console.log("OBJECT ID: ", objectId);
-    console.log("MY REFS", this.state.myRefs);
+
     for (var i=0; i<this.state.allShapes.length; i++){
       if (objectId == this.state.allShapes[i].id){
         this.myRefs[i].current.move(x_dist, y_dist);
@@ -100,6 +121,16 @@ class App extends React.Component {
       }
     }
 
+  }
+
+  async changeParam(objectId, param, newVal){
+    for (var i=0; i<this.state.allShapes.length; i++){
+      if (objectId == this.state.allShapes[i].id){
+        this.myRefs[i].current.changeParam(param, newVal);
+        console.log("CHANGED PARAM");
+        break;
+      }
+    }
   }
   
   stepThrough(){
@@ -165,27 +196,57 @@ class App extends React.Component {
           // setTimeout(async () => {await this.moveRelative(target, x_offset, y_offset)}, 1000);
           this.moveRelative(target, x_offset, y_offset);
         }
-        //DELAY HERE
+
+        if (command == "changeParam"){
+          const target = parts[1];
+          const param = parts[2];
+          const newVal = parts[3];
+          this.changeParam(target, param, newVal);
+        }
+
+        if (command == "remove"){
+          const target = parts[1];
+          this.removeShape(target);
+        }
       //}
 
     // });
   }
   
-  async sleep(milliseconds) {
-    console.log("sleep started");
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-      if ((new Date().getTime() - start) > milliseconds){
-        break;
-      }
-    }
-    console.log("sleep ended");
-  }
 
   onChange(newValue) {
     this.setState({
       codeValue: newValue
     });
+  }
+
+  onChangeDelay(newValue){
+    this.setState({
+      delayValue: newValue
+    });
+    console.log(this.state.delayValue);
+  }
+
+
+
+
+  // CONSIDER USING HASHMAP TO STORE OBJECTS??? 
+  //TODO: ADD JAVADOC AND REFACTOR EVERYTHING
+  removeShape(objectId){
+    console.log("Current allShapes: ", this.state.allShapes);
+    var array = [...this.state.allShapes]; // make a separate copy of the array
+    for (var i=0; i<this.state.allShapes.length; i++){
+      if (objectId == this.state.allShapes[i].id){
+        console.log("REMOVED object: ", objectId);
+
+        array.splice(i, 1);
+        this.myRefs.splice(i, 1);
+
+        this.setState({allShapes: array});
+        break;
+      }
+    }
+    console.log("After remove state: ", this.state.allShapes);
   }
 
 
@@ -227,14 +288,22 @@ class App extends React.Component {
             />
             <button onClick={this.runCanvas.bind(this)}>RUN</button>
             <button onClick={this.clearCanvas.bind(this)}>CLEAR</button>
-            <button onClick={this.stepThrough.bind(this)}>STEP THROUGH</button>
-
+            <button onClick={this.stepThrough.bind(this)}>STEP</button>
+            <p>Delay Time (ms)</p>
+            <Slider
+              min={100}
+              max={2000}
+              step={10}
+              value={this.state.delayValue}
+              orientation="horizontal"
+              onChange={this.onChangeDelay.bind(this)}
+            />
 
           </div>
           
 
           <div className="stage">
-            <Stage width={700} height={600}>
+            <Stage width={800} height={600}>
               <Layer>
                 {this.state.allShapes.map((shape, i) => {                
                   return (  

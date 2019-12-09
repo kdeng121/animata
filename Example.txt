@@ -1,0 +1,27 @@
+circle 100 100 100 blue kevin
+
+circle 200 200 50 red kevin2
+
+moveRelative kevin 100 0
+
+moveRelative kevin2 0 100
+
+rectangle 300 300 300 300 green kevin3
+
+moveRelative kevin3 -100 -100
+
+
+-----------------
+
+circle 100 100 100 blue kevin
+rectangle 100 100 100 100 red kevin2
+moveRelative kevin 100 0
+remove kevin2
+
+--------------
+Change params:
+
+circle 100 100 100 blue circle1
+changeParam circle1 radius 50
+changeParam circle1 color red
+moveRelative circle1 100 0
