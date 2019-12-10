@@ -3,14 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bootstrap": "^4.4.1",
     "canvas": "^2.6.0",
     "fabric": "^3.4.0",
     "konva": "^4.0.15",
     "react": "^16.10.2",
     "react-ace": "^7.0.4",
+    "react-bootstrap": "^1.0.0-beta.16",
     "react-delay": "^0.1.0",
     "react-dom": "^16.10.2",
     "react-konva": "^16.10.1-0",
+    "react-pdf": "^4.1.0",
     "react-rangeslider": "^2.2.0",
     "react-scripts": "3.2.0",
     "react-snap": "^1.23.0"

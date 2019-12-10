@@ -6,11 +6,15 @@ import Konva from 'konva';
 import { render } from 'react-dom';
 import { Stage, Layer, Rect, Text, Circle, Line } from 'react-konva';
 import Shape from './Components/Shape'; // Import a component from another file
+import Modal from './Components/Modal';
 import 'brace/theme/github';
 import { Delay } from 'react-delay';
 
 import Slider from 'react-rangeslider'
 import 'react-rangeslider/lib/index.css'
+
+//import 'bootstrap/dist/css/bootstrap.min.css';
+import Navbar from 'react-bootstrap/Navbar';
 
 class App extends React.Component {
   constructor(props){
@@ -271,11 +275,13 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <header>
-          <h1>
-            Animata
-          </h1>
-        </header>
+        <Navbar bg="light" className="topBar">
+        <Navbar.Brand target="_blank" href="https://docs.google.com/document/d/e/2PACX-1vQFh7ypq9ngURK3sJqdzDNcC1N_iVT4eCYJJRDSuCogCGi3CuqLvR9gImqTy93C3kpvFa78B7hOWOcM/pub"><button type="button" class="btn btn-info btn-lg" >API Docs</button>
+</Navbar.Brand>
+
+        <header>        <h1>Animata</h1>
+</header>
+        </Navbar>
         
         <div className="rowC">
           <div className="editor">
@@ -305,7 +311,7 @@ class App extends React.Component {
           
 
           <div className="stage">
-            <Stage width={800} height={600}>
+            <Stage width={700} height={600}>
               <Layer>
                 {this.state.allShapes.map((shape, i) => {                
                   return (  

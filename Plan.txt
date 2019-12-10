@@ -52,3 +52,4 @@ Final meeting:
 - Walkthrough example
 - Architecture diagram
 - Line number display
+- ADD APPENDIX API

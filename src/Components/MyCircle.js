@@ -13,18 +13,21 @@ class MyCircle extends React.Component {
     
     render() {
       return (
-        <Circle
-          ref={node => {
-            this.circle = node;
-          }}
-          x={this.props.shapeProps.x}
-          y={this.props.shapeProps.y}
-          radius={this.props.shapeProps.radius}
-          fill={this.props.shapeProps.fill}
-          id={this.props.shapeProps.id}
-          draggable
-          onClick={this.moveForward}
-        />
+        // <Circle
+        //   ref={node => {
+        //     this.circle = node;
+        //   }}
+        //   x={this.props.shapeProps.x}
+        //   y={this.props.shapeProps.y}
+        //   radius={this.props.shapeProps.radius}
+        //   fill={this.props.shapeProps.fill}
+        //   id={this.props.shapeProps.id}
+        //   draggable
+        //   onClick={this.moveForward}
+        // />
+        <div>
+            hello1
+        </div>
         );
     }
 }
