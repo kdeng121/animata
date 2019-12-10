@@ -45,3 +45,10 @@ https://lavrton.com/javascript-loops-how-to-handle-async-await-6252dd3c795/
 Draft comments:
 - Technical details describe how everything works
 - Walkthrough of example
+
+
+Final meeting:
+- Added technical detail
+- Walkthrough example
+- Architecture diagram
+- Line number display
