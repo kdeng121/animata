@@ -5,3 +5,8 @@ Animata is a web application designed to animate basic primitive objects (such a
 
 ## Goals
 The goal of Animata is to allow students to control and modify primitive objects (and in the future, data structures) through a custom scripting language and receive immediate visualized feedback based on the student’s alteration of code. Animata aims to provide students the opportunity to develop a complete understanding of various dynamic processes of core computer science principles through interaction and visualization of the data structures. The final product is a modern, web-based application (developed in Node.js and React.js) and can be used as supplemental learning in introductory college-level CS courses.
+
+## Demo
+Website: https://www2.cs.duke.edu/csed/animata/
+
+API Docs: https://docs.google.com/document/d/e/2PACX-1vQFh7ypq9ngURK3sJqdzDNcC1N_iVT4eCYJJRDSuCogCGi3CuqLvR9gImqTy93C3kpvFa78B7hOWOcM/pub
